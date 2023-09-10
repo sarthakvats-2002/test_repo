@@ -1,5 +1,5 @@
 import "./post.css";
-import { MoreVert } from "@material-ui/icons";
+import { MoreVert, Delete } from "@material-ui/icons";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { format } from "timeago.js";
@@ -9,6 +9,7 @@ import { AuthContext } from "../../context/AuthContext";
 export default function Post({ post }) {
   const [like, setLike] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
   const [user, setUser] = useState({});
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const { user: currentUser } = useContext(AuthContext);
@@ -20,7 +21,7 @@ export default function Post({ post }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(baseUrl +`/users?userId=${post.userId}`);
+      const res = await axios.get(baseUrl + `/users?userId=${post.userId}`);
       setUser(res.data);
     };
     fetchUser();
@@ -28,11 +29,22 @@ export default function Post({ post }) {
 
   const likeHandler = () => {
     try {
-      axios.put(baseUrl+"/posts/" + post._id + "/like", { userId: currentUser._id });
-    } catch (err) {}
+      axios.put(baseUrl + "/posts/" + post._id + "/like", { userId: currentUser._id });
+    } catch (err) { }
     setLike(isLiked ? like - 1 : like + 1);
     setIsLiked(!isLiked);
   };
+
+  const deleteHandler = async () => {
+    try {
+      await axios.delete(baseUrl + `/posts/${post._id}`, { userId: user._id });
+      window.location.reload();
+    } catch (err) { }
+  }
+
+  const controlMenu = () => {
+    setIsOpened(wasOpened => !wasOpened);
+  }
   return (
     <div className="post">
       <div className="postWrapper">
@@ -52,8 +64,9 @@ export default function Post({ post }) {
             <span className="postUsername">{user.username}</span>
             <span className="postDate">{format(post.createdAt)}</span>
           </div>
-          <div className="postTopRight">
+          <div className="postTopRight" onClick={controlMenu}>
             <MoreVert />
+            {isOpened && currentUser._id === post.userId ? <div className="deleteBox" onClick={deleteHandler}>Delete Post <Delete /></div> : <span></span>}
           </div>
         </div>
         <div className="postCenter">
