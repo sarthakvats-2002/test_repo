@@ -54,6 +54,27 @@
       align-items: center;
       justify-content: space-between;
   }
+
+  .postTopRight{
+    position: relative;
+    cursor: pointer;
+  }
+
+  .deleteBox{
+    box-shadow: 2px 2px 2px 2px #888888;
+    background: white !important;
+    height: 40px;
+    width: 115px;
+    position: absolute;
+    left: -100px;
+    top: 24px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
   
   .postBottomLeft{
       display: flex;
