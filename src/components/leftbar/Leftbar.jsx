@@ -3,11 +3,19 @@ import "./leftbar.css"
 import { RssFeed, Announcement, QuestionAnswer, Help, PeopleOutline, WorkOutline, Event, DateRange } from "@material-ui/icons";
 import { Users } from "../../dummyData";
 import { useHistory } from "react-router";
+import { loginCall } from "../../apiCalls";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 export default function Leftbar() {
+    const { dispatch } = useContext(AuthContext);
     const history = useHistory();
     const handleClick = async (e) => {
         localStorage.clear();
+        loginCall(
+            { email: null, password: null },
+            dispatch
+          );
         history.push("/login");
     }
     return (
